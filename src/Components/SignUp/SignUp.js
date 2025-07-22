@@ -1,51 +1,94 @@
-// src/Components/Sign_Up/Sign_Up.js
+// Following code has been commented with appropriate comments for your reference.
 import React, { useState } from 'react';
-import './SignUp.css';
+import './Sign_Up.css'
+import { Link, useNavigate } from 'react-router-dom';
+import { API_URL } from '../../config';
 
-function Sign_Up() {
-  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
-  const [errors, setErrors] = useState({});
+// Function component for Sign Up form
+const Sign_Up = () => {
+    // State variables using useState hook
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [password, setPassword] = useState('');
+    const [showerr, setShowerr] = useState(''); // State to show error messages
+    const navigate = useNavigate(); // Navigation hook from react-router
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    // Function to handle form submission
+    const register = async (e) => {
+        e.preventDefault(); // Prevent default form submission
 
-  const validate = () => {
-    let newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.email.includes('@')) newErrors.email = 'Valid email required';
-    if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
-    return newErrors;
-  };
+        // API Call to register user
+        const response = await fetch(`${API_URL}/api/auth/register`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                password: password,
+                phone: phone,
+            }),
+        });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length === 0) {
-      alert('Sign Up Successful!');
-      // Submit data here
-    } else {
-      setErrors(validationErrors);
-    }
-  };
+        const json = await response.json(); // Parse the response JSON
 
-  return (
-    <div className="signup-container">
-      <h2>Sign Up</h2>
-      <form onSubmit={handleSubmit}>
-        <input name="name" type="text" placeholder="Name" value={formData.name} onChange={handleChange} />
-        {errors.name && <p className="error">{errors.name}</p>}
+        if (json.authtoken) {
+            // Store user data in session storage
+            sessionStorage.setItem("auth-token", json.authtoken);
+            sessionStorage.setItem("name", name);
+            sessionStorage.setItem("phone", phone);
+            sessionStorage.setItem("email", email);
 
-        <input name="email" type="email" placeholder="Email" value={formData.email} onChange={handleChange} />
-        {errors.email && <p className="error">{errors.email}</p>}
+            // Redirect user to home page
+            navigate("/");
+            window.location.reload(); // Refresh the page
+        } else {
+            if (json.errors) {
+                for (const error of json.errors) {
+                    setShowerr(error.msg); // Show error messages
+                }
+            } else {
+                setShowerr(json.error);
+            }
+        }
+    };
 
-        <input name="password" type="password" placeholder="Password" value={formData.password} onChange={handleChange} />
-        {errors.password && <p className="error">{errors.password}</p>}
+    // JSX to render the Sign Up form
+    return (
+        <div className="container" style={{marginTop:'5%'}}>
+            <div className="signup-grid">
+                <div className="signup-form">
+                <form method="POST" onSubmit={register}>
+  <div className="form-group">
+    <label>Email:</label>
+    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+    
+    <label>Username:</label>
+    <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
 
-        <button type="submit">Register</button>
-      </form>
-    </div>
-  );
+    <label>Password:</label>
+    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+
+    <label>Confirm Password:</label>
+    <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+
+    <button type="submit">Sign Up</button>
+  </div>
+</form>
+
+                            <label htmlFor="email">Email</label>
+                            <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" name="email" id="email" className="form-control" placeholder="Enter your email" aria-describedby="helpId" />
+                            {showerr && <div className="err" style={{ color: 'red' }}>{showerr}</div>}
+                        </div>
+                        {/* Apply similar logic for other form elements like name, phone, and password to capture user information */}
+                    </form>
+                </div>
+            </div>
+        </div>
+        {/* Note: Sign up role is not stored in the database. Additional logic can be implemented for this based on your React code. */}
+    );
 }
 
-export default Sign_Up;
+export default Sign_Up; // Export the Sign_Up component for use in other components
