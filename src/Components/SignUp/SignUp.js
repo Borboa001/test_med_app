@@ -61,21 +61,19 @@ const Sign_Up = () => {
             <div className="signup-grid">
                 <div className="signup-form">
                 <form method="POST" onSubmit={register}>
-  <div className="form-group">
-    <label>Email:</label>
-    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-    
-    <label>Username:</label>
-    <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
-
-    <label>Password:</label>
-    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-
-    <label>Confirm Password:</label>
-    <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-
-    <button type="submit">Sign Up</button>
-  </div>
+                <div className="form-group">
+               <label htmlFor="password">Password</label>
+               <input
+                 value={password}
+                 onChange={(e) => setPassword(e.target.value)}
+                 type="password"
+                 name="password"
+                 id="password"
+                 className="form-control"
+                 placeholder="Enter your password"
+                 aria-describedby="helpId"
+               />
+             </div>
 </form>
 
                             <label htmlFor="email">Email</label>
