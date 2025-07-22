@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="Sign_Up.css" />
+</head>
+<body>
+  <form class="signup-form" action="#" method="post">
+    <label for="role">Role:</label>
+    <select id="role" name="role" required>
+      <option value="">Select Role</option>
+      <option value="doctor">Doctor</option>
+      <option value="patient">Patient</option>
+    </select>
+
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required />
+
+    <label for="phone">Phone Number:</label>
+    <input type="tel" id="phone" name="phone" required />
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required />
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required />
+
+    <div class="buttons">
+      <input type="submit" value="Sign Up" />
+      <input type="reset" value="Reset" />
+    </div>
+  </form>
+</body>
+</html>
